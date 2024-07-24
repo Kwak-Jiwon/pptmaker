@@ -1,0 +1,32 @@
+.header {
+    width: 100%;
+    background-color: black;
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
+    font-size: 24px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    line-height: 1.5;
+  }
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  .header a {
+    color: white;
+    text-decoration: none;
+    margin: 0 20px;
+  }
+  
+  .header a:hover {
+    text-decoration: underline;
+  }
+  
