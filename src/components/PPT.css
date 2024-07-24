@@ -140,7 +140,7 @@
 
 .pdf-viewer {
   width: 48%;
-  height: 100%;
+  height: 70%;
   border: 1px solid #ccc;
   padding: 10px;
   overflow: hidden; /* Prevents scroll bars from appearing */
@@ -148,7 +148,7 @@
 
 .text-viewer {
   width: 48%;
-  height: 100%;
+  height: 70%;
   border: 1px solid #ccc;
   padding: 10px;
 }

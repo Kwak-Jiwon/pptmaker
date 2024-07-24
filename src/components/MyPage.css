@@ -1,0 +1,21 @@
+.mypage-container {
+    text-align: center;
+    padding: 100px 20px 20px 20px; /* 상단 패딩을 추가하여 헤더와 내용 사이의 공간을 만듭니다 */
+}
+
+.pdf-text-pair {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.pdf-container {
+    flex: 1;
+    margin-right: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 800px; /* 뷰어 높이 조절 */
+    overflow-y: auto; /* 스크롤을 위해 overflow-y 설정 */
+}
