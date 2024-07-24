@@ -47,19 +47,20 @@
     width: 100%;
     padding: 20px;
     margin-top: 100px; /* Adjusted to account for fixed header */
-    text-align: center;
 }
 
 .text {
-    font-size: 50px;
-    text-align: center;
-    margin-right: 20px;
+    font-size: 90px;
+    text-align: left;
+    margin-left: 700px; /* Moved text 300px to the right */
+    margin-top: -100px; /* Moved text 50px up */
 }
 
 .image-container1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    transform: translate(-400px, 200px); /* Move the image container left by 400px and down by 200px */
 }
 
 .image {
@@ -67,6 +68,7 @@
     height: auto;
     max-width: 400px; /* Adjust the image size */
     max-height: 400px; /* Adjust the image size */
+    transform: scale(1.5); /* Scale the image by 1.5 */
     border: none;
     outline: none;
     box-shadow: none;

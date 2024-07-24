@@ -18,6 +18,9 @@ const Home = () => {
     <div className="container">
       <Header />
       <div className="content">
+        <div className="image-container1">
+          <img className="image" src="nubduck.png" alt="nubduck" />
+        </div>
         <div className="text">
           <div>발표를 더</div>
           <div className="text-transition">
@@ -25,9 +28,6 @@ const Home = () => {
               <span key={i} className={currentText === i ? 'current' : ''}>{text}</span>
             ))}
           </div>
-        </div>
-        <div className="image-container1">
-          <img className="image" src="nubduck.png" alt="nubduck" />
         </div>
       </div>
     </div>
