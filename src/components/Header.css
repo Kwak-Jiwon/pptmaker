@@ -22,7 +22,7 @@
   
   .header a {
     color: white;
-    text-decoration: none;
+    text-decoration: none; /* 밑줄 제거 */
     margin: 0 20px;
   }
   

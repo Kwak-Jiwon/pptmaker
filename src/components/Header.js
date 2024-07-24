@@ -6,9 +6,8 @@ const Header = () => {
   return (
     <div className="header">
       <div className="header-content">
-        <span>WHITEBOARD</span>
+        <Link to="/">WHITEBOARD</Link>
         <div>
-          <Link to="/">HOME</Link>
           <Link to="/ppt">PPT</Link>
           <Link to="/video">영상</Link>
           <Link to="/mypage">mypage</Link>

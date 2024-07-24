@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import Header from './Header';
 import './PPT.css';
 
 const PPT = () => {
@@ -22,17 +23,7 @@ const PPT = () => {
 
   return (
     <div className="container">
-      <div className="header">
-        <div className="header-content">
-          <span>WHITEBOARD</span>
-          <div>
-            <Link to="/">HOME</Link>
-            <Link to="/ppt">PPT</Link>
-            <Link to="/video">영상</Link>
-            <Link to="/mypage">mypage</Link>
-          </div>
-        </div>
-      </div>
+      <Header />
       <div className="content">
         {showCompletionMessage ? (
           <div className="completion-message-container">

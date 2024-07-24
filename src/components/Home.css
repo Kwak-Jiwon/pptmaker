@@ -56,7 +56,7 @@
     margin-right: 20px;
 }
 
-.image-container {
+.image-container1 {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -70,6 +70,10 @@
     border: none;
     outline: none;
     box-shadow: none;
+}
+
+.image:hover {
+    /* 아무 스타일도 적용하지 않음 */
 }
 
 .text-transition {
