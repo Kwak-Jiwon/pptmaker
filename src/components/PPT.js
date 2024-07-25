@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Viewer, Worker } from '@react-pdf-viewer/core';
+import axios from 'axios';
+import { Viewer, Worker, SpecialZoomLevel } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import Header from './Header';
 import './PPT.css';
+import pdfjsVersion from 'pdfjs-dist/package.json'; // 올바른 경로에서 버전을 읽어오기
 
 const PPT = () => {
   const [presentationTopic, setPresentationTopic] = useState('');
@@ -12,13 +13,32 @@ const PPT = () => {
   const [presentationTime, setPresentationTime] = useState('');
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [pdfUrl, setPdfUrl] = useState('');
+  const [notes, setNotes] = useState({}); // 페이지별 메모를 저장할 상태
 
-  const handleSubmit = () => {
-    setShowCompletionMessage(true);
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://34.125.250.179:3000/genPpt', { 
+        presentationTopic, 
+        relatedContent, 
+        presentationTime 
+      });
+
+      setPdfUrl(response.data.pdfUrl);
+      console.log(response.data.pdfUrl);
+      setShowCompletionMessage(true);
+    } catch (error) {
+      console.error('Error generating PPT:', error);
+    }
   };
 
   const handleTemplateSelection = (template) => {
     setSelectedTemplate(template);
+  };
+
+  const handleNoteChange = (pageIndex, event) => {
+    const newNotes = { ...notes, [pageIndex]: event.target.value };
+    setNotes(newNotes);
   };
 
   return (
@@ -30,12 +50,41 @@ const PPT = () => {
             <div className="completion-message">PPT와 대본 생성이 완료됐습니다!</div>
             <div className="completion-viewers">
               <div className="pdf-viewer">
-                <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.0.279/build/pdf.worker.min.js`}>
-                  <Viewer fileUrl="/pdfex.pdf" />
+                <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion.version}/pdf.worker.min.js`}>
+                  <Viewer
+                    fileUrl={pdfUrl}
+                    defaultScale={SpecialZoomLevel.PageWidth}
+                    renderPage={(props) => {
+                      const { canvasLayer, annotationLayer, textLayer, pageIndex } = props;
+                      return (
+                        <div style={{ position: 'relative', margin: '10px 0' }}>
+                        <div>
+                          {canvasLayer.children}
+                          {annotationLayer.children}
+                          {textLayer.children}
+                        </div>
+                        <textarea
+                          style={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            width: '200px',
+                            height: '100px',
+                            zIndex: 100,
+                            background: 'rgba(255, 255, 255, 0.9)',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            padding: '5px',
+                          }}
+                          placeholder={`메모를 입력하세요 (페이지 ${pageIndex + 1})`}
+                          value={notes[pageIndex] || ''}
+                          onChange={(event) => handleNoteChange(pageIndex, event)}
+                          />
+                        </div>
+                      );
+                    }}
+                  />
                 </Worker>
-              </div>
-              <div className="text-viewer">
-                <textarea placeholder="백엔드에서 값을 받아와서 이곳에 텍스트를 표시할 예정입니다." readOnly></textarea>
               </div>
             </div>
           </div>
@@ -49,10 +98,6 @@ const PPT = () => {
             <div className="form-row">
               <label htmlFor="content">관련 내용?</label>
               <input type="text" id="content" value={relatedContent} onChange={(e) => setRelatedContent(e.target.value)} placeholder="관련 내용을 입력하세요" />
-            </div>
-            <div className="form-row">
-              <label htmlFor="pptCount">PPT 장수?</label>
-              <input type="text" id="pptCount" value={pptCount} onChange={(e) => setPptCount(e.target.value)} placeholder="PPT 장수를 입력하세요" />
             </div>
             <div className="form-row">
               <label htmlFor="time">발표 시간?</label>
