@@ -24,19 +24,14 @@ const PPT = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // 서버가 꺼져 있을 때는 pdfex.pdf를 사용
-      const dummyPdfUrl = 'pdfex.pdf';
-      const dummyScripts = ['스크립트 1', '스크립트 2', '스크립트 3'];
+      const response = await axios.post('http://34.125.250.179:3000/genPpt', { 
+        presentationTopic, 
+        relatedContent, 
+        presentationTime 
+      });
 
-      // 실제 서버 호출이 아니라 더미 데이터를 사용
-      // const response = await axios.post('http://34.125.250.179:3000/genPpt', { 
-      //   presentationTopic, 
-      //   relatedContent, 
-      //   presentationTime 
-      // });
-
-      setPdfUrl(dummyPdfUrl);
-      setTextContent(dummyScripts.join('\n')); // 받아온 스크립트를 줄바꿈으로 구분하여 설정
+      setPdfUrl(response.data.pdfUrl);
+      setTextContent(response.data.scripts.join('\n')); // 받아온 스크립트를 줄바꿈으로 구분하여 설정
       setShowCompletionMessage(true);
     } catch (error) {
       console.error('Error generating PPT:', error);
@@ -70,7 +65,7 @@ const PPT = () => {
               <div className="pdf-container">
                 <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion.version}/pdf.worker.min.js`}>
                   <Viewer
-                    fileUrl={pdfUrl}
+                    fileUrl={pdfUrl + '.pdf'}
                     plugins={[defaultLayoutPluginInstance]}
                   />
                 </Worker>
