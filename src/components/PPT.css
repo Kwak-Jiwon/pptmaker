@@ -130,12 +130,15 @@
   width: 100%;
 }
 
-.completion-viewers {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-  width: 80%;
-  height: calc(100vh - 200px); /* Adjust height to fit screen */
+.pdf-container {
+  flex: 1;
+  margin: 20px 0;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 80%; /* 뷰어의 너비를 늘림 */
+  height: 800px; /* 뷰어의 높이를 늘림 */
+  overflow-y: auto; /* 스크롤을 위해 overflow-y 설정 */
 }
 
 .pdf-viewer {

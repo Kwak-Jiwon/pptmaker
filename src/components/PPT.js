@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { Viewer, Worker, SpecialZoomLevel } from '@react-pdf-viewer/core';
+import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import Header from './Header';
 import './PPT.css';
 import pdfjsVersion from 'pdfjs-dist/package.json'; // 올바른 경로에서 버전을 읽어오기
@@ -14,7 +16,7 @@ const PPT = () => {
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [pdfUrl, setPdfUrl] = useState('');
-  const [notes, setNotes] = useState({}); // 페이지별 메모를 저장할 상태
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   const handleSubmit = async () => {
     try {
@@ -36,11 +38,6 @@ const PPT = () => {
     setSelectedTemplate(template);
   };
 
-  const handleNoteChange = (pageIndex, event) => {
-    const newNotes = { ...notes, [pageIndex]: event.target.value };
-    setNotes(newNotes);
-  };
-
   return (
     <div className="container">
       <Header />
@@ -48,44 +45,13 @@ const PPT = () => {
         {showCompletionMessage ? (
           <div className="completion-message-container">
             <div className="completion-message">PPT와 대본 생성이 완료됐습니다!</div>
-            <div className="completion-viewers">
-              <div className="pdf-viewer">
-                <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion.version}/pdf.worker.min.js`}>
-                  <Viewer
-                    fileUrl={pdfUrl}
-                    defaultScale={SpecialZoomLevel.PageWidth}
-                    renderPage={(props) => {
-                      const { canvasLayer, annotationLayer, textLayer, pageIndex } = props;
-                      return (
-                        <div style={{ position: 'relative', margin: '10px 0' }}>
-                        <div>
-                          {canvasLayer.children}
-                          {annotationLayer.children}
-                          {textLayer.children}
-                        </div>
-                        <textarea
-                          style={{
-                            position: 'absolute',
-                            top: '10px',
-                            right: '10px',
-                            width: '200px',
-                            height: '100px',
-                            zIndex: 100,
-                            background: 'rgba(255, 255, 255, 0.9)',
-                            border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            padding: '5px',
-                          }}
-                          placeholder={`메모를 입력하세요 (페이지 ${pageIndex + 1})`}
-                          value={notes[pageIndex] || ''}
-                          onChange={(event) => handleNoteChange(pageIndex, event)}
-                          />
-                        </div>
-                      );
-                    }}
-                  />
-                </Worker>
-              </div>
+            <div className="pdf-container">
+              <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion.version}/pdf.worker.min.js`}>
+                <Viewer
+                  fileUrl={pdfUrl}
+                  plugins={[defaultLayoutPluginInstance]}
+                />
+              </Worker>
             </div>
           </div>
         ) : (
