@@ -9,7 +9,6 @@ const Header = () => {
         <Link to="/">WHITEBOARD</Link>
         <div>
           <Link to="/ppt">PPT</Link>
-          <Link to="/video">영상</Link>
           <Link to="/mypage">mypage</Link>
         </div>
       </div>

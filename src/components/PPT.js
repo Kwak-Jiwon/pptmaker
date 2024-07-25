@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
@@ -7,6 +7,7 @@ import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import Header from './Header';
 import './PPT.css';
 import pdfjsVersion from 'pdfjs-dist/package.json'; // 올바른 경로에서 버전을 읽어오기
+import loadingGif from './loading.gif'; // 로딩 gif 파일의 경로
 
 const PPT = () => {
   const [presentationTopic, setPresentationTopic] = useState('');
@@ -16,21 +17,31 @@ const PPT = () => {
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [pdfUrl, setPdfUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [textContent, setTextContent] = useState(''); // 기본값을 빈 문자열로 설정
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
-      const response = await axios.post('http://34.125.250.179:3000/genPpt', { 
-        presentationTopic, 
-        relatedContent, 
-        presentationTime 
-      });
+      // 서버가 꺼져 있을 때는 pdfex.pdf를 사용
+      const dummyPdfUrl = 'pdfex.pdf';
+      const dummyScripts = ['스크립트 1', '스크립트 2', '스크립트 3'];
 
-      setPdfUrl(response.data.pdfUrl);
-      console.log(response.data.pdfUrl);
+      // 실제 서버 호출이 아니라 더미 데이터를 사용
+      // const response = await axios.post('http://34.125.250.179:3000/genPpt', { 
+      //   presentationTopic, 
+      //   relatedContent, 
+      //   presentationTime 
+      // });
+
+      setPdfUrl(dummyPdfUrl);
+      setTextContent(dummyScripts.join('\n')); // 받아온 스크립트를 줄바꿈으로 구분하여 설정
       setShowCompletionMessage(true);
     } catch (error) {
       console.error('Error generating PPT:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,16 +53,34 @@ const PPT = () => {
     <div className="container">
       <Header />
       <div className="content">
-        {showCompletionMessage ? (
+        {loading ? (
+          <div className="loading-container">
+            <img src={loadingGif} alt="Loading..." className="loading-gif" />
+          </div>
+        ) : showCompletionMessage ? (
           <div className="completion-message-container">
             <div className="completion-message">PPT와 대본 생성이 완료됐습니다!</div>
-            <div className="pdf-container">
-              <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion.version}/pdf.worker.min.js`}>
-                <Viewer
-                  fileUrl={pdfUrl}
-                  plugins={[defaultLayoutPluginInstance]}
+            <button 
+              className="download-button" 
+              onClick={() => window.location.href = pdfUrl + '.pptx'}
+            >
+              ppt 다운로드 하기!
+            </button>
+            <div className="pdf-text-container">
+              <div className="pdf-container">
+                <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion.version}/pdf.worker.min.js`}>
+                  <Viewer
+                    fileUrl={pdfUrl}
+                    plugins={[defaultLayoutPluginInstance]}
+                  />
+                </Worker>
+              </div>
+              <div className="text-container">
+                <textarea
+                  value={textContent}
+                  readOnly
                 />
-              </Worker>
+              </div>
             </div>
           </div>
         ) : (
